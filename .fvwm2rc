@@ -1,0 +1,254 @@
+######## constants ########
+imagepath		$FVWM_USERDIR/icons/fvwm:+:$FVWM_USERDIR/icons/mysvg
+######## global set ########
+desktopsize		1x2
+EdgeResistance 250
+ColormapFocus FollowsMouse
+
+######## colorsets ########
+Colorset 40 fg "dim gray", bg "dark slate gray"
+Colorset 41 fg gold, bg firebrick
+Colorset 42 RootTransparent buffer, fg rgb:69/69/69, bg average, \
+      Tint black 20, bgTint black 20, sh Black, hi #202070
+Colorset 30 fg gold, bg black, sh black, hi #202070
+Colorset 31 fg white, bg black, sh red, hi red4
+Colorset 32 fg gray, bg black, sh black, hi #202070
+######## decors ########
+AddToDecor		FlatDecor
++			BorderStyle Inactive Colorset 40 -- HiddenHandles NoInset
++			BorderStyle Active   Colorset 41 -- HiddenHandles NoInset
++			TitleStyle AllInactive Colorset 40 -- flat
++			TitleStyle AllActive   Colorset 41 -- flat
++			ButtonStyle All -- UseTitleStyle flat
+
+AddToDecor		FTDecor
++			BorderStyle Inactive Colorset 42 -- HiddenHandles NoInset
++			BorderStyle Active   Colorset 41 -- HiddenHandles NoInset
++			TitleStyle AllInactive Colorset 42 -- flat
++			TitleStyle AllActive   Colorset 41 -- flat
++			ButtonStyle All -- UseTitleStyle flat
+######## styles ########
+Menustyle * fvwm, Font "xft:WenQuanYi Micro Hei:style=Regular:size=12"
+Menustyle * hilightback, HilightTitleBack, \
+	  menucolorset 32, titlecolorset 30, activecolorset 31
+#### global ####
+Style *			Colorset 42, HilightColorset 41
+Style *			EdgeMoveDelay 250
+Style *			EdgeMoveResistance 10
+Style *			UseDecor FTDecor,  HandleWidth 6
+Style *			Font "xft:WenQuanYi Micro Hei:style=Regular:size=12"
+Style *			IconFont "xft:WenQuanYi Micro Hei:style=Regular:size=12"
+Style *			!Icon, !IconTitle
+Style *			MWMFunctions, MWMDecor, HintOverride
+Style *			DecorateTransient, !UsePPosition
+Style *			TileCascadePlacement
+Style *			FocusFollowsMouse
+
+#### misc ####
+Style "*lock"		!Title,!Handles,Sticky,WindowListSkip,\
+      ClickToFocus,Layer 3,!Closable, StaysOnTop,!iconifiable
+Style "XTerm|rxvt"	Icon xterm.xpm, SloppyFocus
+Style "cat"		!Icon,!Closable,windowlistskip
+Style "*VirtualBox*"	StartsOnPage 0 0 1, \
+      Colorset 40, UseDecor FlatDecor
+Style "Fvwm*"		!Title,  Sticky, WindowListSkip
+Style "Fvwm*"		BorderWidth 2, CirculateSkipIcon, CirculateSkip
+Style "FvwmForm-Talk"	!windowlistskip
+
+######## Mouse/Key binings ########
+# some simple default mouse bindings:
+Mouse 1	      R	A       Menu RootMenu Nop
+Mouse 2	      R	A      	Menu Window-Ops Nop
+Mouse 3	      R	A      	WindowList
+
+Mouse 0	      1	A      	WindowShade
+Mouse 0	      2	A     	Maximize
+Mouse 0	      4	A     	Iconify
+
+Mouse 1	F	A	Resize-or-Raise
+Mouse 1	TS	A	Move-or-Raise
+Mouse 1	I	A	Move-or-Iconify
+Mouse 2	I	A	Iconify
+Mouse 2	FST	A	Menu Window-Ops2 Nop
+Mouse 3	TSIF	A	RaiseLower
+
+# launcher
+Key   F2      A M	Menu RootMenu Nop
+Key   F3      A C	Module	FvwmTalk
+Key   F12     A N	smart-cat
+Key   F12     A M	warp-or-exec-smart chromium
+Key   F12     A S	warp-or-exec-smart emacs
+Key   delete  A	CM	Menu Quit-Verify Nop
+Key   Tab     A	M	WindowList Root c c \
+      CurrentDesk, NoGeometry, CurrentAtEnd, IconifiedAtEnd
+
+# actions on windows
+Key   f       A	SCM	 Maximize-Adjust
+Key   m	      A	SCM	 Move
+Key   u	      A	CM	 Raise
+Key   c	      A	CM	 Close
+Key   r	      A	CM	 Resize
+Key   i	      A	CM	 DeiconifyAndRearrange
+key   s	      A	CM	 Stick
+Key   d	      A	4	 ShowDesktop
+Key   l       A	CM	 RaiseLower
+
+# page selector
+Key   n       A CM       gotopage 0 1
+Key   u	      A CM	 gotopage 0 0
+
+# XF86sym
+Key   XF86AudioMute A A Exec amixer set Master toggle 
+Key   XF86AudioRaiseVolume A A Exec amixer -c 0 set Master 2dB+
+Key   XF86AudioLowerVolume A A Exec amixer -c 0 set Master 2dB-
+Key   XF86AudioPlay A A Exec cmus-remote --pause
+Key   XF86AudioStop A A Exec cmus-remote --stop
+Key   XF86AudioPrev A A Exec cmus-remote --prev
+Key   XF86AudioNext A A Exec cmus-remote --next
+#Key  XF86WLAN      A A Exec wirezju
+
+######## Menu ########
+# root menu
+DestroyMenu		RootMenu
+AddToMenu		RootMenu	"Root Menu"	Title
++	  		"&Xterm"	Exec exec xterm
++			"&Emacs"	Warp-Or-Exec-smart emacs
++			"&Dead"	Warp-Or-Exec-g deadbeef
++			"&VirtB"	Exec exec virtualbox
++			"PCMan&FM"	Exec exec pcmanfm-qt
++			""		Nop
++			"nEmacs"	Exec exec emacs
++			""		Nop
++			"Fvwm Modules"	          Popup Module-Popup
+
+# quit/restart menu
+DestroyMenu		Quit-Verify
+AddToMenu		Quit-Verify	"Quit-Or-Restart" Title
++			"&Quit"		  Quit
++			"&Restart"	  Restart
+
+# window-options menu
+DestroyMenu		Window-Ops2
+AddToMenu		Window-Ops2
++			"&Move"		Move
++			"&Resize"	Resize
++			"R&aise"	Raise
++			"&Lower"	Lower
++			"(De)&Iconify"	Iconify
++			"(Un)&Stick"	Stick
++                       "(Un)Ma&ximize" Maximize
++			""		Nop
++			"&Delete"	Delete
++			"&Close"	Close
++			"Destroy"	Destroy
++			""		Nop
++			"ScrollBar" 	Module FvwmScroll 2 2
++			"Print"         PrintFunction
++                       "Print Reverse" PrintReverseFunction
+
+######## Initialization Functions ########
+DestroyFunc		StartFunction
+AddToFunc		StartFunction
+ +			I Exec compton --backend glx --inactive-dim 0.25 -c
+ +			I Exec fvwm-root -r /home/ank/.fvwm/wallpaper/dark_grasslands.xpm
+ +			I Module FvwmAuto 200 raise Nop
+ +			I Exec exec xdaliclock -24 -fg gold -transparent -noseconds -nocycle -geometry -2+2 -font '-wenquanyi-wenquanyi bitmap song-medium-r-*-*-14-*-*-*-*-*-*-*'
+
+DestroyFunc		InitFunction
+AddToFunc		InitFunction
+ +			I Exec exec xterm -title cat -cr red
+ + 			I Exec exec chromium
+
+DestroyFunc		ExitFunction
+AddToFunc		ExitFunction
+ +			I Exec cleandownload
+ +			I Exec pkill xdaliclock
+ +			I Exec pkill compton
+ +			I KillModule FvwmAuto
+
+######## functions ########
+# some sample functions
+AddToFunc MailFunction	   I Next (AcceptsFocus $0) Iconify -1
++		           I Next (AcceptsFocus $0) Focus
++			   I None (AcceptsFocus $0) Exec $0 $1
+
+AddToFunc Move-or-Raise		I Raise
++				M Move
++  				D Lower
+
+AddToFunc Move-or-Raise2	M Raise
++				M Move
++  				D Lower
+
+AddToFunc Maximize-Func		M Maximize	 0 100
++				C Maximize	 0 80
++				D Maximize	 100 100
+
+AddToFunc Move-or-Iconify	I Raise
++				M Move
++				D Iconify
+
+AddToFunc Resize-or-Raise	I Raise
++				M Resize
++				D Lower
+
+AddToFunc Resize-or-Raise2	M Raise
++				M Resize
++				D Lower
+
+AddToFunc PrintFunction		I Raise
++				I Exec xdpr -id $w
+
+AddToFunc PrintReverseFunction  I Raise
++                               I Exec xdpr 1/2 -h -rv -id $w
+
+AddToFunc Iconify-and-Raise     I Iconify
++                               I Raise
+
+# custom functions
+DestroyFunc		SelectWindow
+AddToFunc		SelectWindow
++			I Iconify false
++			I Raise
++			I WarpToWindow 50 50
+
+DestroyFunc		SelectWindow2
+AddToFunc		SelectWindow2
++			I MoveToPage
++			I SelectWindow
+
+DestroyFunc		Warp-Or-Exec
+AddToFunc		Warp-Or-Exec
++			I Next ($0,CurrentPage) SelectWindow
++			I TestRc (nomatch) Exec exec $0
+
+DestroyFunc		Warp-Or-Exec-g
+AddToFunc		Warp-Or-Exec-g
++			I Next ($0) SelectWindow
++			I TestRc (nomatch) Exec exec $0
+
+DestroyFunc		Warp-Or-Exec-smart
+AddToFunc		Warp-Or-Exec-smart
++			I Current ($0) Iconify
++			I TestRc (nomatch) Warp-Or-Exec-g $0
+
+DestroyFunc		Fetch-Or-Exec-cat
+AddToFunc		Fetch-Or-Exec-cat
++			I Next (cat) SelectWindow2
++			I TestRc (nomatch) Exec exec xterm -title cat -cr red
+
+DestroyFunc		smart-cat
+AddToFunc		smart-cat
++			I Current (cat) Iconify
++			I TestRc (nomatch) Fetch-Or-Exec-cat
+
+DestroyFunc		ShowDesktop
+AddToFunc		ShowDesktop
++			I All (CurrentPage,Iconifiable,!iconic,!cat,!sticky) Iconify on
++			I TestRc (nomatch) All (CurrentPage,!cat) Iconify off
+
+DestroyFunc		Maximize-Adjust
+AddToFunc		Maximize-Adjust
++			I Current Maximize
+
+
